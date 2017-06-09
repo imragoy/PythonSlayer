@@ -53,7 +53,7 @@ def create_stuff(stuff_type):
     elif (r == 3):
         wep['reroll'] += secondary
     wep['atk'] = round(wep['atk'] / 2, 0)
-    wep['reroll'] = round(wep['reroll'] / 20, 0)
+    wep['reroll'] = round(wep['reroll'] / 25, 0)
     wep['def'] = round(wep['def'] / 4, 0)
     return (wep)
 
@@ -163,6 +163,7 @@ def turn():
         fight_info = "You stole "+str(bounty)+" gold!\nYour opponent take "+str(patk)+" damage!\nYou take "+str(dmg)+" damage!"
 
 def fight():
+    global stun
     global foe
     global gold
     global fight_info
@@ -264,7 +265,7 @@ def shop():
             i[wid] = create_stuff(stuff_types[randint(0,3)])
 
 stuff = {'weapon' : create_stuff('weapon'), 'armor' : create_stuff('armor'), 'shield' : create_stuff('shield'), 'ring' : create_stuff('ring')}
-w_lvl = 20
+w_lvl = 25
 
 clear_screen()
 name = input('\nWhat is your name ?\n\n'+prompt)
