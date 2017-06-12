@@ -9,17 +9,17 @@ cw = "\x1b[0m"
 
 stuff_types = ['weapon', 'armor', 'shield', 'ring']
 nb_quest = 0
-max_parry = 70
+max_parry = 75
 potion = 0
 fight_info = ""
 stun = 0
 potion = 0
 prompt = ">>> "
 job = ""
-gold = 0
+gold = 10
 zone = 1
 w_lvl = 0
-player = {'hp':50, 'hp_max': 50, 'atk': 15, 'def': 3, 'reroll' : 1, 'reroll_max': 1}
+player = {'hp':50, 'hp_max': 50, 'atk': 15, 'def': 2, 'reroll' : 1, 'reroll_max': 1}
 foe = {'hp':30, 'hp_max': 30, 'atk': 10}
 foes = {'hp':30, 'hp_max': 30, 'atk': 10}
 
@@ -32,6 +32,8 @@ def clear_screen():
 
 def create_stuff(stuff_type):
     quality = w_lvl + randint(round(-w_lvl * 0.2, 0), round(w_lvl * 0.2, 0))
+    if (job == "thief"):
+        quality = round(quality * 1.2, 0)
     primary = randint(round(quality*0.3, 0), quality)
     secondary = quality - primary
     wep = {'type': stuff_type, 'hp_max': 0, 'atk': 0, 'def': 0, 'reroll' : 0}
@@ -53,12 +55,22 @@ def create_stuff(stuff_type):
     elif (r == 3):
         wep['reroll'] += secondary
     wep['atk'] = round(wep['atk'] / 2, 0)
-    wep['reroll'] = round(wep['reroll'] / 25, 0)
+    wep['reroll'] = round(wep['reroll'] / 30, 0)
     wep['def'] = round(wep['def'] / 4, 0)
     return (wep)
 
 def print_wep(st, w):
-    print(st +"[Type : ",w['type'],",  HP MAX : +"+chp, w['hp_max'],cw+",  ATK : +"+catk, w['atk'],cw+",  DEF : +"+cdef, w['def'],cw+",  REROLL : +"+crrl, w['reroll'], cw+"]")
+    st += "[Type : "+w['type']+"   "
+    if (w['hp_max'] != 0):
+        st += ",  HP MAX : +"+chp+str(w['hp_max'])+cw
+    if (w['atk'] != 0):
+        st += ",  ATK : +"+catk+str(w['atk'])+cw
+    if (w['def'] != 0):
+        st += ",  DEF : +"+cdef+str(w['def'])+cw
+    if (w['reroll'] != 0):
+        st +=",  REROLL : +"+crrl+str(w['reroll'])+cw
+    st += "]"
+    print(st)
 
 def display_fight(patk, pdef, pagi, fatk,):
     global fight_info
@@ -66,7 +78,7 @@ def display_fight(patk, pdef, pagi, fatk,):
     print(fight_info)
     fight_info = ""
     print("\n\n\n"+name+" the "+job+" :                         gold : "+str(gold)+"\n\npotion available : "+str(potion)+"\nreroll(s) available this turn : "+crrl+str(player['reroll'])+cw+"\nHP  : "+chp+str(player['hp'])+"/"+str(player['hp_max'])+cw+"\nATK : "+catk+str(patk)+cw+" ("+str(player['atk'])+")\n"+"DEF : "+cdef+str(pdef)+cw+" ("+str(player['def'])+")\n"+"PAR : "+str(pagi)+"% ("+str(max_parry)+"%)")
-    print("\n\nCreature lvl "+str(zone)+" : \n\nHP  : "+chp+str(foe['hp'])+"/"+str(foe['hp_max'])+cw+"\nATK : "+catk+str(fatk)+cw+" ("+str(foe['atk'])+")")
+    print("\n\nPython lvl "+str(zone)+" : \n\nHP  : "+chp+str(foe['hp'])+"/"+str(foe['hp_max'])+cw+"\nATK : "+catk+str(fatk)+cw+" ("+str(foe['atk'])+")")
     print("\n(Type 'h' for help)")
 
 def turn():
@@ -201,7 +213,7 @@ def main_loop():
         shop()
 
 def choose_job():
-    return input('\n\nChoose your class by typing one of the following:\n\n"thief" \n(can perform a light attack that steals gold)\n\n"wizard"\n(can reroll his ennemie\'s attack)\n\n"barbarian"\n(can perform an attack that deals double damage but skip his next turn)\n\n"swordsman"\n(has +10% chance to perform a parry).\n\n'+prompt)
+    return input('\n\nChoose your class by typing one of the following:\n\n"thief" \n(can perform a 25% damage attack that steals gold and get better quality stuff)\n\n"wizard"\n(can reroll his ennemie\'s attack)\n\n"barbarian"\n(can perform an attack that deals double damage but skip his next turn)\n\n"swordsman"\n(has +15% chance to perform a parry).\n\n'+prompt)
 
 def display_shop(i1,i2,i3):
     clear_screen()
@@ -265,7 +277,7 @@ def shop():
             i[wid] = create_stuff(stuff_types[randint(0,3)])
 
 stuff = {'weapon' : create_stuff('weapon'), 'armor' : create_stuff('armor'), 'shield' : create_stuff('shield'), 'ring' : create_stuff('ring')}
-w_lvl = 25
+w_lvl = 30
 
 clear_screen()
 name = input('\nWhat is your name ?\n\n'+prompt)
@@ -276,7 +288,7 @@ while (job != "thief" and job != "wizard" and job != "barbarian" and job != "swo
     clear_screen()
     job = choose_job()
 if (job == "swordsman"):
-    max_parry += 10
+    max_parry += 15
 
 main_loop()
 # 0 help
